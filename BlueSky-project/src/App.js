@@ -11,6 +11,7 @@ function App() {
   
  
   const [todos,setTodos] = useState([])
+  // const [user,setUser]= useState([])
   const [todo,setTodo] = useState("")
   
   const todoContext = useMemo(
@@ -32,6 +33,13 @@ function App() {
           dispatch({ type: "LIST", value:data });
           console.log(state.todosFcontext)
       },
+
+      listUser: async (data) => {
+      
+        dispatch({ type: "USER", value:data });
+        console.log(state.userFcontext)
+    },
+
     }),
     []
   );
@@ -46,13 +54,20 @@ function App() {
         case "LIST":
           return {
             ...prevState,
-            todosFcontext: action.value
-          }
+            todosFcontext: action.value,
+          };
+        case "USER":
+        return {
+          ...prevState,
+          userFcontext: action.value,
+        }
+
       }
     },
     {
       isLoading: true,
       todosFcontext: {},
+      userFcontext:[],
     }
   );
 
