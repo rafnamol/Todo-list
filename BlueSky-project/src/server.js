@@ -1,9 +1,9 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.makeServer = void 0;
+// Object.defineProperty(exports, "__esModule", { value: true });
+// exports.makeServer = void 0;
 var miragejs_1 = require("miragejs");
 var faker = require("faker");
-function makeServer() {
+export function makeServer() {
     var server = new miragejs_1.Server({
         serializers: {
             // application: JSONAPISerializer.extend({
@@ -89,4 +89,4 @@ function makeServer() {
     });
     return server;
 }
-exports.makeServer = makeServer;
+

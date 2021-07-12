@@ -1,23 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo,useReducer } from 'react';
 import logo from './logo.svg';
 import './App.css'
 import Header from "./Header";
 import Content from "./Content";
-import server from "./server.js";
+import {makeServer} from "./server.js";
+import ToDoContext from './context'
 
 function App() {
-  const [todos,setTodos] = React.useState([])
-  const [todo,setTodo] = React.useState("")
+  makeServer();
+  
+ 
+  const [todos,setTodos] = useState([])
+  const [todo,setTodo] = useState("")
+  
+  const todoContext = useMemo(
+    () => ({
+      addTodo: async (data) => {
+        await fetch(
+            "api/todo/create",
+            {
+              method: "POST",
+              body: JSON.stringify(
+                  {"name":"Something to do","isComplete":false}),
+            }
+          )
+          dispatch({ type: "ADD" });
+      },
 
-  useEffect(() => {
-    fetch("api/todos", {
-      headers : { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-       }})
-      .then((response) => response.json())
-      .then((json) => setTodos(json))
-  }, [])
+      listTodo: async (data) => {
+      
+          dispatch({ type: "LIST", value:data });
+          console.log(state.todosFcontext)
+      },
+    }),
+    []
+  );
+  const [state, dispatch] = useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case "ADD":
+          return {
+            ...prevState,
+            isLoading: true,
+          };
+        case "LIST":
+          return {
+            ...prevState,
+            todosFcontext: action.value
+          }
+      }
+    },
+    {
+      isLoading: true,
+      todosFcontext: {},
+    }
+  );
+
+
+ 
 
   // useEffect(() => {
   //   fetch("api/users" , {
@@ -37,7 +77,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Content todos={todos} setTodos={setTodos} />
+  <ToDoContext.Provider value={{todoContext, state, dispatch}}><Content /></ToDoContext.Provider>  
+      
       </header>
     </div>
   );
